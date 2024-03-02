@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Market Data Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    table {
+      width: 80%; /* Adjust the width as needed */
+      max-width: 800px;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Crypto Market Data Table</h1>
+  <button onclick="getData()">Fetch Data</button>
+  <table id="cryptoTable"></table>
+
+  <script>
+    function getData() {
+      fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false')
+        .then(response => response.json())
+        .then(data => {
+          displayTable(data);
+        })
+        .catch(error => console.error('Failed to fetch crypto market data:', error));
+    }
+
+    function displayTable(data) {
+      const table = document.getElementById('cryptoTable');
+      table.innerHTML = ''; // Clear previous content
+
+      // Create table header
+      const thead = table.createTHead();
+      const headerRow = thead.insertRow();
+      const fieldsToDisplay = ['name', 'symbol', 'current_price', 'market_cap', 'market_cap_rank', 'total_volume'];
+      fieldsToDisplay.forEach(field => {
+        const th = document.createElement('th');
+        th.textContent = field.replace(/_/g, ' '); // Replace underscores with spaces
+        headerRow.appendChild(th);
+      });
+
+      // Create table body
+      const tbody = table.createTBody();
+      data.forEach(item => {
+        const row = tbody.insertRow();
+        fieldsToDisplay.forEach(field => {
+          const cell = row.insertCell();
+          cell.textContent = typeof item[field] === 'object' ? JSON.stringify(item[field]) : item[field];
+        });
+      });
+    }
+  </script>
+</body>
+</html>

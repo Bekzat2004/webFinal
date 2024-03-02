@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Admin User</title>
+</head>
+<body>
+  <h1>Create Admin User</h1>
+  <form id="createAdminForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" name="firstName" required>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" name="lastName" required>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required>
+
+    <label for="country">Country:</label>
+    <input type="text" id="country" name="country" required>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+    <!-- Existing form fields ... -->
+    <button type="button" onclick="createAdmin()">Create Admin User</button>
+  </form>
+
+  <script>
+    function createAdmin() {
+    const formData = {
+      username: document.getElementById('username').value,
+      password: document.getElementById('password').value,
+      firstName: document.getElementById('firstName').value,
+      lastName: document.getElementById('lastName').value,
+      age: parseInt(document.getElementById('age').value),
+      country: document.getElementById('country').value,
+      gender: document.getElementById('gender').value,
+      role: 'admin' // Set the role to 'admin'
+    };
+
+    fetch('http://localhost:3000/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to create admin user.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert('Admin user created successfully.');
+      // Optionally, you can redirect the user or perform additional actions.
+    })
+    .catch(error => {
+      console.error('Error:', error.message);
+      alert(error.message);
+    });
+  }
+  </script>
+</body>
+</html>

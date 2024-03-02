@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data USA API Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      width: 80%; /* Adjust the width as needed */
+      max-width: 800px;
+      height: 400px; /* Set a fixed height */
+    }
+  </style>
+</head>
+<body>
+  <h1>Data USA API Example</h1>
+  <button onclick="getData()">Fetch Data</button>
+  <canvas id="populationChart" width="800" height="400"></canvas>
+
+  <script>
+    function getData() {
+      fetch('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
+        .then(response => response.json())
+        .then(data => {
+          // Extract data for the chart
+          const years = data.data.slice(-5).map(entry => entry.Year); // Limit to the last 5 years
+          const populations = data.data.slice(-5).map(entry => entry.Population); // Limit to the last 5 years
+
+          // Create a line chart
+          const ctx = document.getElementById('populationChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: years,
+              datasets: [{
+                label: 'Population Over Years',
+                data: populations,
+                fill: false,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointRadius: 5,
+                pointHitRadius: 10,
+              }],
+            },
+            options: {
+              responsive: false, // Set to false
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Year',
+                  },
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: 'Population',
+                  },
+                },
+              },
+            },
+          });
+        })
+        .catch(error => console.error('Failed to fetch Data USA API data:', error));
+    }
+  </script>
+</body>
+</html>

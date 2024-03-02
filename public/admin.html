@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    form {
+      max-width: 600px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <h2>Add Portfolio Item</h2>
+
+    <label for="pictures">Pictures (comma-separated URLs):</label>
+    <input type="text" id="pictures" name="pictures" required>
+
+    <label for="nameEn">Name (English):</label>
+    <input type="text" id="nameEn" name="nameEn" required>
+
+    <label for="nameEs">Name (Spanish):</label>
+    <input type="text" id="nameEs" name="nameEs" required>
+
+    <label for="descriptionEn">Description (English):</label>
+    <textarea id="descriptionEn" name="descriptionEn" required></textarea>
+
+    <label for="descriptionEs">Description (Spanish):</label>
+    <textarea id="descriptionEs" name="descriptionEs" required></textarea>
+
+    <button type="button" onclick="addPortfolioItem()">Add Portfolio Item</button>
+  </form>
+
+  <script>
+    function addPortfolioItem() {
+      const pictures = document.getElementById('pictures').value.split(',');
+      const nameEn = document.getElementById('nameEn').value;
+      const nameEs = document.getElementById('nameEs').value;
+      const descriptionEn = document.getElementById('descriptionEn').value;
+      const descriptionEs = document.getElementById('descriptionEs').value;
+
+      const portfolioItem = {
+        pictures,
+        names: { en: nameEn, es: nameEs },
+        descriptions: { en: descriptionEn, es: descriptionEs },
+      };
+
+      // Send the portfolio item to the server (you'll need to implement this endpoint)
+      fetch('http://localhost:3000/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer YOUR_ADMIN_TOKEN', // Include an admin token for authentication
+        },
+        body: JSON.stringify(portfolioItem),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to add portfolio item.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert('Portfolio item added successfully.');
+        // Optionally, you can update the UI or take other actions.
+      })
+      .catch(error => {
+        console.error('Error:', error.message);
+        alert(error.message);
+      });
+    }
+  </script>
+</body>
+</html>

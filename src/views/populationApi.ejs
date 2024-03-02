@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Population of USA</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <nav>
+    <ul class="nav-links">
+        <li><a href="/">Main</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+        <li><a href="/populationApi">Population API</a></li>
+        <li><a href="/currencyApi">Currency API</a></li>
+        <li><a href="/usersApi">Users API</a></li>
+        <li><a href="/portfolio">Profile</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+<center>
+  <h1>Population of USA</h1>
+  <button onclick="getData()">Fetch Data</button><br>
+  <canvas id="populationChart" width="800" height="400"></canvas>
+</center>
+  <script>
+    function getData() {
+      fetch('https://datausa.io/api/data?drilldowns=Nation&measures=Population')
+        .then(response => response.json())
+        .then(data => {
+          // Extract data for the chart
+          const years = data.data.slice(-5).map(entry => entry.Year); // Limit to the last 5 years
+          const populations = data.data.slice(-5).map(entry => entry.Population); // Limit to the last 5 years
+
+          // Create a line chart
+          const ctx = document.getElementById('populationChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: years,
+              datasets: [{
+                label: 'Population Over Years',
+                data: populations,
+                fill: false,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                pointRadius: 5,
+                pointHitRadius: 10,
+              }],
+            },
+            options: {
+              responsive: false, // Set to false
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Year',
+                  },
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: 'Population',
+                  },
+                },
+              },
+            },
+          });
+        })
+        .catch(error => console.error('Failed to fetch Data USA API data:', error));
+    }
+  </script>
+</body>
+<style>
+  canvas {
+    width: 80%; /* Adjust the width as needed */
+    max-width: 800px;
+    height: 400px; /* Set a fixed height */
+  }
+    body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-right: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #loginForm {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 20px auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        button {
+    background-color: #394959;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1d2124;
+}
+</style>
+</html>
